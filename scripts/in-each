@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cd "$(dirname "$0")"
+for i in `./list-repos`; do echo "### $(tput smul)$i$(tput sgr0)" && (cd $i && "$@"); done

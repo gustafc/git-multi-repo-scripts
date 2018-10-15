@@ -1,0 +1,6 @@
+# Add to ~/.gitconfig
+# TODO: We might want to avoid purging other branches than only master, if we're using git flow 
+
+[alias]
+	st = status -uall
+	purge = !git remote prune origin && (git branch --merged | egrep -v '^(\\*|  master$)' | xargs git branch -d)

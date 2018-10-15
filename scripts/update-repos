@@ -1,0 +1,42 @@
+#!/bin/bash
+
+# Updates all repos in the current directory, or optionally, the repos specified as arguments.
+
+# This script runs a lot faster if you add these lines to your ~/.ssh/config (credits http://interrobeng.com/2013/08/25/speed-up-git-5x-to-50x/):
+# ControlMaster auto
+# ControlPath /tmp/%r@%h:%p
+# ControlPersist yes
+
+. "$(dirname "$0")"
+
+function longest_line_length {
+  awk '{ print length }' | sort -n -r | head -1
+}
+function pwd_branch {
+  git rev-parse --abbrev-ref HEAD
+}
+
+repos=$( [[ $# == 0 ]] && (list-repos | cut -d / -f 2) || echo "$@" )
+
+repolength=$( echo "$repos" | xargs -n 1 echo | longest_line_length )
+branchlength=$( echo "$repos" | while read r; do (cd $r; pwd_branch); done | longest_line_length)
+
+rarr=$'\xe2\x9e\xa1\xef\xb8\x8f '
+ok=$'\xf0\x9f\x91\x8c '
+neutral=$'\xf0\x9f\x98\x90 '
+fail=$'\xf0\x9f\x98\xb1 '
+
+for repo in $repos; do
+  (
+    cd $repo
+  	printf '%-*s %-*s %s ' $repolength "$repo" $branchlength "$(pwd_branch)" "$rarr"
+  	old_head=$(git rev-parse HEAD)
+    log="/tmp/gitup$(date '+%Y%m%d%H%M%S').$RANDOM.log"
+    if (git pull --ff-only --recurse-submodules=yes && echo SUBMODULE: && git submodule update) >"$log" 2>&1; then
+      [[ $old_head == $(git rev-parse HEAD) ]] && echo "$neutral" || echo "$ok"
+      rm "$log"
+    else
+      echo "$fail $((egrep '^error:' "$log"; cat "$log") | head -1 | tr -d '\r') (check $log for more details)"
+    fi
+  )
+done
