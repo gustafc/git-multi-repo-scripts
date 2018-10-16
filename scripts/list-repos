@@ -2,4 +2,4 @@
 
 # Lists repos in the current directory
 
-find . -name .git -maxdepth 2 -mindepth 2 -exec dirname '{}' ';'
+find . -maxdepth 2 -mindepth 2 -name .git -exec dirname '{}' ';'
