@@ -7,7 +7,7 @@
 # ControlPath /tmp/%r@%h:%p
 # ControlPersist yes
 
-. "$(dirname "$0")"
+cd "$(dirname "$0")"
 
 function longest_line_length {
   awk '{ print length }' | sort -n -r | head -1
@@ -16,7 +16,7 @@ function pwd_branch {
   git rev-parse --abbrev-ref HEAD
 }
 
-repos=$( [[ $# == 0 ]] && (list-repos | cut -d / -f 2) || echo "$@" )
+repos=$( [[ $# == 0 ]] && (./list-repos | cut -d / -f 2) || echo "$@" )
 
 repolength=$( echo "$repos" | xargs -n 1 echo | longest_line_length )
 branchlength=$( echo "$repos" | while read r; do (cd $r; pwd_branch); done | longest_line_length)
