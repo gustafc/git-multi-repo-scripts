@@ -1,5 +1,7 @@
 # git-multi-repo-scripts
 
+Handy and popular scripts for people who have more than one git repo to worry about.
+
 Installation, usage, and everything else is very much pending cleanup.
 
 ## Installation
