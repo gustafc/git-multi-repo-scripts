@@ -3,6 +3,8 @@
 #
 # Set email in all repos to your email.
 #
+# NOTE: This is superfluous - use conditional includes instead: https://stackoverflow.com/questions/21307793/set-git-config-values-for-all-child-folders
+#
 set -e
 cd $(dirname "$0")
 
